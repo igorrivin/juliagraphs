@@ -21,6 +21,24 @@ function rankify(ar)
        return ranked
        end;
 
+function bipartize(ar)
+    ar1=convert(Array, ar)
+    n = size(ar)[1]
+    m = n/2
+    mm = maximum(ar)
+    for i in 1:n
+        for j in 1:n
+            if (i<=m && j<=m)
+                ar1[i, j] = mm+1
+            end
+            if(i>m && j>m)
+                ar1[i, j] = mm+1
+            end
+        end
+    end
+    return Symmetric(ar1)
+end
+
 "Converts the output of rankify into the simple Laplacian matrix (D - A) of the subgraph of the complete graph where edge values are less than p"
 function graphify(ar, p)
     n = size(ar)[1]
