@@ -116,13 +116,13 @@ function plotbetticurveslist2_py(Dlist;dim=1,ocf = false, tit="", left=0, right=
 end
 
 "Plot the betti curves of dimensions up to maxdim of the same filtration"
-function plotbetticurvessame_py(D1::Dict;maxdim=1,ocf = false, tit="")
-    for i in 0:maxdim
+function plotbetticurvessame_py(D1::Dict;maxdim=1,mindim=0,ocf = false, tit="")
+    for i in mindim:maxdim
         bcu = betticurve(D1;dim = i, ocf = ocf)
         x = bcu[:,1]
         y = bcu[:,2]
         ll = "dimension $i"
-        plot(x, y, linewidth=1.0, linestyle="--",label="dimension $i")
+        PyPlot.plot(x, y, linewidth=1.0, linestyle="--",label="dimension $i")
         
     end
     title(tit)
@@ -170,3 +170,16 @@ function randrank(r, n, dim=1)
     C = eirene(rankify(xx), maxdim=dim)
     return C
 end
+
+
+"Compute the Cayley-Menger matrix of a distance array."
+function make_cm(darr,n)
+    return [zeros(1, 1) ones(1, n); ones(n, 1) darr.^2]
+end
+
+function get_masked(themat, ar1, ind)
+    themask = ar1[:, ind]
+    return themat[themask.>0, themask.>0]
+end
+
+
