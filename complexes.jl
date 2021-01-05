@@ -5,6 +5,7 @@ using RandomMatrices
 using PyPlot
 using Random
 using Interpolations
+using Clustering
 
 #pyplot()
 Random.seed!(0)
@@ -182,4 +183,50 @@ function get_masked(themat, ar1, ind)
     return themat[themask.>0, themask.>0]
 end
 
+function do_dist(corrmat)
+    return sqrt.(2 .- (2 .* corrmat))
+end
 
+ 
+function clustermat(clustarray, themat, theind)
+    indices = findall(x-> x==theind, clustarray)
+    return themat[indices, indices]
+end
+    
+function clustermats(clustarray, themat)
+    numclust = maximum(clustarray)
+    return map(x-> clustermat(clustarray, themat, x), 1:numclust)
+end
+
+function make_complex(amat, maxdim=1)
+    return eirene(rankify(amat), maxdim=maxdim)
+end
+
+function effective_rank(amat, cutoff=0.9)
+    evs = sort( eigvals(amat), rev=true)
+    howmany = size(evs)[1]
+    evsum = tr(amat)
+    thesum=0
+    for i in eachindex(evs)
+        thesum += evs[i]
+        if (thesum >= cutoff * evsum)
+            return i
+        end
+    end
+    return howmany
+end
+       
+    
+function effective_frac(amat, cutoff=0.9)
+    evs = sort( eigvals(amat), rev=true)
+    howmany = size(evs)[1]
+    evsum = tr(amat)
+    thesum=0
+    for i in eachindex(evs)
+        thesum += evs[i]
+        if (thesum >= cutoff * evsum)
+            return i/howmany
+        end
+    end
+    return 1
+end
