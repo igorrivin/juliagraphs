@@ -230,3 +230,10 @@ function effective_frac(amat, cutoff=0.9)
     end
     return 1
 end
+
+function stupid_print(mat, fptr)
+    howmany = size(mat)[1]
+    for i in 1:howmany
+        println(fptr, mat[i, 1], ",", mat[i, 2])
+    end
+end
